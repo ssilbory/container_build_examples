@@ -1,8 +1,10 @@
 # Yes you can build in a multistage dockerfile with a different image than you compile with.
 FROM ubuntu:18.04 as compile
 
+# Get my source code
 COPY src /src
 
+# Install ant and jdk
 RUN apt-get update && apt-get install ant openjdk-8-jdk
 
 # This will only work if src in your base directory can run ant.
@@ -15,6 +17,7 @@ FROM alpine:3.9 as installer
 ENV TOMCAT_VERSION 8.0.53
 
 RUN apk add wget
+# Really me should mirror this in our network
 RUN wget --quiet --no-cookies https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz -O /tmp/tomcat.tgz
 
 # We don't care about layers as we are throwing this containers away
@@ -25,11 +28,16 @@ RUN mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat
 
 
 # Final image
-# Note that we could clean up our prior image, but then we couldn't share the alpine:3.9 layer with everyone.
-FROM alpine:3.9 
+# Note that we could clean up our prior image in a single RUN, but then we couldn't share the alpine:3.9 layer with everyone.
+FROM alpine:3.9
+# Install just the jre 
 RUN apk add --no-cache openjdk8-jre
+# Upgrade our packages
 RUN apk upgrade --no-cache
+# Install the tomcat dir from the tomcat installer stage
 COPY --from=installer /opt/tomcat 
+# Install the war file we built
 COPY --from=compile /src/myapp.war  /opt/tomcat/webapps/ROOT.war
 
+# Run tomcat
 CMD /opt/tomcat/bin/catalina.sh run
