@@ -1,4 +1,4 @@
-# Ubuntu latest is the currnet LTS
+# Ubuntu latest is the current LTS
 FROM ubuntu:latest
 ENV TOMCAT_VERSION 8.0.53
 

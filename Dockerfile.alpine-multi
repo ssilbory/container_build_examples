@@ -3,6 +3,7 @@ FROM alpine:3.9 as builder
 ENV TOMCAT_VERSION 8.0.53
 RUN apk add --no-cache wget
 RUN wget --quiet --no-cookies https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz -O /tmp/tomcat.tgz 
+# We don't care about these layers
 RUN tar xf /tmp/tomcat.tgz -C /opt 
 RUN mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat 
 RUN rm -rf /opt/tomcat/webapps/examples 
@@ -11,10 +12,14 @@ RUN rm -rf /opt/tomcat/webapps/ROOT
 
 # New stage
 FROM alpine:3.9
+
 # Install updates, requirements, and clean up in multiple runs
 RUN apk add --no-cache openjdk8-jre
 RUN apk upgrade --no-cache
+
+# Copy /opt/tomcat from prior build
 COPY --from=builder /opt/tomcat /opt/tomcat
 COPY src/sample.war /opt/tomcat/webapps/ROOT.war
+
 CMD /opt/tomcat/bin/catalina.sh run
 
