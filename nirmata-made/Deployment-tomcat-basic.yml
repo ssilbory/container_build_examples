@@ -1,0 +1,40 @@
+---
+kind: "Deployment"
+apiVersion: "extensions/v1beta1"
+metadata:
+  annotations: {}
+  name: "tomcat-basic"
+  labels:
+    nirmata.io/deployment.name: "tomcat-basic"
+    nirmata.io/component: "tomcat-basic"
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  selector:
+    matchLabels:
+      nirmata.io/component: "tomcat-basic"
+    matchExpressions: []
+  strategy:
+    type: "RollingUpdate"
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      annotations: {}
+      labels:
+        nirmata.io/deployment.name: "tomcat-basic"
+        nirmata.io/component: "tomcat-basic"
+    spec:
+      terminationGracePeriodSeconds: 30
+      nodeSelector: {}
+      containers:
+      - name: "tomcat-basic"
+        image: "ssilbory/tomcat-basic:latest"
+        command: []
+        args: []
+        imagePullPolicy: "IfNotPresent"
+        ports:
+        - name: "http"
+          containerPort: 8080
+          protocol: "TCP"

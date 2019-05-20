@@ -1,0 +1,19 @@
+# Ubuntu latest is the currnet LTS
+FROM ubuntu:latest
+ENV TOMCAT_VERSION 8.0.53
+
+# Install updates, requirements, and clean up
+RUN apt-get -y update && apt-get -y upgrade && apt-get -y install openjdk-8-jdk wget && apt-get clean && rm -r /var/lib/apt/lists/*
+
+# Note how this is a single RUN!!! 
+RUN wget --quiet --no-cookies https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz -O /tmp/tomcat.tgz && \
+tar xzvf /tmp/tomcat.tgz -C /opt && \
+  mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat && \
+  rm /tmp/tomcat.tgz && \
+  rm -rf /opt/tomcat/webapps/examples && \
+  rm -rf /opt/tomcat/webapps/docs && \
+  rm -rf /opt/tomcat/webapps/ROOT
+
+COPY src/sample.war /opt/tomcat/webapps/ROOT.war
+
+CMD /opt/tomcat/bin/catalina.sh run

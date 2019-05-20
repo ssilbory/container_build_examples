@@ -1,0 +1,20 @@
+apiVersion: "extensions/v1beta1"
+kind: Deployment
+metadata:
+  name: tomcat-test-app 
+spec:
+  selector:
+    matchLabels:
+      app: tomcat-test
+  replicas: 1 
+  template:
+    metadata:
+      labels:
+        app: tomcat-test 
+    spec:
+      containers:
+      - name: tomcat-test
+        image: ssilbory/alpine-tomcat:v5
+        ports:
+        - containerPort: 8080
+

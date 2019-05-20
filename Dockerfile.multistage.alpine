@@ -1,0 +1,31 @@
+# Yes you can build in a multistage dockerfile
+FROM debian:9 as compile
+RUN touch /foo
+COPY src /src
+
+RUN cd /src && ant
+
+#build out my image  
+FROM alpine:3.9 as installer
+ENV TOMCAT_VERSION 8.0.53
+
+
+RUN apk add --no-cache wget
+RUN wget --quiet --no-cookies https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz -O /tmp/tomcat.tgz
+
+RUN tar xf /tmp/tomcat.tgz -C /opt
+RUN mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat
+RUN rm -rf /opt/tomcat/webapps/examples
+RUN rm -rf /opt/tomcat/webapps/docs
+RUN rm -rf /opt/tomcat/webapps/ROOT
+
+RUN apk add --no-cache openjdk8-jre
+RUN apk upgrade --no-cache
+RUN apk del wget
+
+# Final Image
+FROM scratch
+COPY --from=installer / /
+COPY --from=compile /src/sample.war  /opt/tomcat/webapps/ROOT.war
+
+CMD /opt/tomcat/bin/catalina.sh run

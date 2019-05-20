@@ -1,2 +1,4 @@
-# docker_build_examples
-# container_build_examples
+This is a set of example Docker files.  They should all be buildable with "docker build . -f <Dockerfile Name>"
+
+There is also a sample Kubernetes service and deployment.  As well as a saved deployment and service exported from the Nirmata UI.  Note that you'll need to change the image name in the deploy to be your container.
+

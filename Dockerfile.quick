@@ -1,0 +1,5 @@
+# Tomcat example app really really fast
+FROM tomcat
+RUN rm -rf  /usr/local/tomcat/webapps/ROOT
+RUN wget https://tomcat.apache.org/tomcat-7.0-doc/appdev/sample/sample.war -O /usr/local/tomcat/webapps/ROOT.war
+

@@ -1,0 +1,27 @@
+FROM ubuntu:latest
+ENV TOMCAT_VERSION 8.0.53
+
+# Install updates, requirements, and clean up in multiple runs
+RUN apt-get -y update 
+RUN apt-get -y upgrade 
+RUN apt-get -y install openjdk-8-jdk wget 
+RUN apt-get clean
+RUN rm -r /var/lib/apt/lists/*
+
+RUN mkdir /usr/local/tomcat
+
+
+# Note how this is multiple RUNs!!! 
+RUN wget --quiet --no-cookies https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz -O /tmp/tomcat.tgz 
+RUN tar xzvf /tmp/tomcat.tgz -C /opt 
+RUN mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat 
+RUN rm /tmp/tomcat.tgz 
+RUN rm -rf /opt/tomcat/webapps/examples 
+RUN rm -rf /opt/tomcat/webapps/docs 
+RUN rm -rf /opt/tomcat/webapps/ROOT
+
+COPY src/sample.war /opt/tomcat/webapps/ROOT.war
+
+# Entrypoint mean arguments to a docker command are taken as args to the entrypoint script!!!  Not a different command and it's args.
+ENTRYPOINT [ "/opt/tomcat/bin/catalina.sh”, “run”]
+
