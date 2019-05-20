@@ -1,29 +1,32 @@
-# Yes you can build in a multistage dockerfile
-FROM debian:9 as compile
-RUN touch /foo
+# Yes you can build in a multistage dockerfile with a different image than you compile with.
+FROM ubuntu:18.04 as compile
+
 COPY src /src
 
+RUN apt-get update && apt-get install ant openjdk-8-jdk
 RUN cd /src && ant
+# No cleanup as this container is dicarded
 
-#build out my image  
+# Setup my alpine image
 FROM alpine:3.9 as installer
 ENV TOMCAT_VERSION 8.0.53
 
-
-RUN apk add --no-cache wget
+RUN apk add wget
 RUN wget --quiet --no-cookies https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz -O /tmp/tomcat.tgz
 
+# We don't car about layers as we are throwing this containers away
 RUN tar xf /tmp/tomcat.tgz -C /opt
 RUN mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat
 RUN rm -rf /opt/tomcat/webapps/examples
 RUN rm -rf /opt/tomcat/webapps/docs
 RUN rm -rf /opt/tomcat/webapps/ROOT
+RUN rm -f /tmp/tomcat.tgz
 
 RUN apk add --no-cache openjdk8-jre
 RUN apk upgrade --no-cache
 RUN apk del wget
 
-# Final Image
+# Final Image clear out all of our extra layers
 FROM scratch
 COPY --from=installer / /
 COPY --from=compile /src/sample.war  /opt/tomcat/webapps/ROOT.war
