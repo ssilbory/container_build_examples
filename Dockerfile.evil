@@ -22,6 +22,6 @@ RUN rm -rf /opt/tomcat/webapps/ROOT
 
 COPY src/sample.war /opt/tomcat/webapps/ROOT.war
 
-# Entrypoint mean arguments to a docker command are taken as args to the entrypoint script!!!  Not a different command and it's args.
+# An entrypoint means arguments to a docker command are taken as args to the entrypoint script!!!  Not a different command and it's args.
 ENTRYPOINT [ "/opt/tomcat/bin/catalina.sh”, “run”]
 
