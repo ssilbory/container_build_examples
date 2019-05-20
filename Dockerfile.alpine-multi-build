@@ -28,7 +28,8 @@ RUN mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat
 
 
 # Final image
-# Note that we could clean up our prior image in a single RUN, but then we couldn't share the alpine:3.9 layer with everyone.
+# Note that we could use our prior image by cleaning up, creating from scratch, and copying / from the prior image.`
+# This takes more time, but let's us share the alpine:3.9 layer with everyone else.
 FROM alpine:3.9
 # Install just the jre 
 RUN apk add --no-cache openjdk8-jre
