@@ -1,9 +1,13 @@
 This is a set of example Docker files.  They should all be buildable with "docker build . -f <Dockerfile Name>".
 
 The logical progression is in complexity is:
+
 Dockerfile  (Basic with tomcat's tomcat image)
+
 Dockerfile.ubuntu (Simple with Ubuntu)
+
 Dockerfile.ubuntu-multi (Introduce Multistage)
+
 Dockerfile.alpine-multi-build (Run alpine and build with Ubuntu)
 
 
