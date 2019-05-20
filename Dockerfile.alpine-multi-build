@@ -10,7 +10,7 @@ RUN cd /src && ant
 
 # No cleanup as this container is discarded
 
-# Setup my alpine image
+# Setup tomcat directory (name, location...)
 FROM alpine:3.9 as installer
 ENV TOMCAT_VERSION 8.0.53
 
