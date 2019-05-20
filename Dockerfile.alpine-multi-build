@@ -7,7 +7,7 @@ COPY src /src
 # Install ant and jdk
 RUN apt-get update && apt-get install ant openjdk-8-jdk
 
-# This will only work if src in your base directory can run ant.
+# This will only work if src in your base directory can build something with ant
 RUN cd /src && ant
 
 # No cleanup as this container is discarded
