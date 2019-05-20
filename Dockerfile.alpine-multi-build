@@ -17,7 +17,7 @@ FROM alpine:3.9 as installer
 ENV TOMCAT_VERSION 8.0.53
 
 RUN apk add wget
-# Really me should mirror this in our network
+# Really we should mirror this in our network
 RUN wget --quiet --no-cookies https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz -O /tmp/tomcat.tgz
 
 # We don't care about layers as we are throwing this containers away
@@ -25,6 +25,8 @@ RUN tar xf /tmp/tomcat.tgz -C /opt
 RUN mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat
 
 # No cleanup as this container is discarded
+# Note this stage is overkill as we could do this entire thing in one RUN in the next stage.
+# Still there are a lot of reason to do it like this for more complex builds. (addition packages, hiding where we download the tomcat image...)
 
 
 # Final image
