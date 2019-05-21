@@ -38,7 +38,7 @@ RUN apk add --no-cache openjdk8-jre
 # Upgrade our packages
 RUN apk upgrade --no-cache
 # Install the tomcat dir from the tomcat installer stage
-COPY --from=installer /opt/tomcat 
+COPY --from=installer /opt/tomcat /opt/tomcat 
 # Install the war file we built
 COPY --from=compile /src/myapp.war  /opt/tomcat/webapps/ROOT.war
 
