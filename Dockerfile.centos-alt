@@ -8,7 +8,7 @@ RUN yum -y install wget ; wget --quiet --no-cookies https://archive.apache.org/d
 
 RUN cd /tmp ; tar -xf tomcat*gz; rm -f tom*gz; mv apache-tomcat* /opt/tomcat
 
-RUN  rm -rf /opt/tomcat/webapps/examples  rm -rf /opt/tomcat/webapps/docs 
+RUN  rm -rf /opt/tomcat/webapps/examples /opt/tomcat/webapps/docs 
 
 COPY src/sample.war /opt/tomcat/webapps/ROOT.war
 
