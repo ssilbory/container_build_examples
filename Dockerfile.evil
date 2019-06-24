@@ -6,22 +6,29 @@ RUN apt-get -y update
 RUN apt-get -y upgrade 
 RUN apt-get -y install openjdk-8-jdk wget 
 RUN apt-get clean
+# This is pointless as these files are still in prior layers.
 RUN rm -r /var/lib/apt/lists/*
 
 RUN mkdir /usr/local/tomcat
 
-
 # Note how this is multiple RUNs!!! 
+# Creates layer with tarball
 RUN wget --quiet --no-cookies https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz -O /tmp/tomcat.tgz 
+# Creates layer with files in opt/apache-tomcat-${TOMCAT_VERSION} 
 RUN tar xzvf /tmp/tomcat.tgz -C /opt 
+# Creates layer with files in /opt/tomcat
 RUN mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat 
+# Pointless as the file still exists in prior layer
 RUN rm /tmp/tomcat.tgz 
+# All of the these deletes are pointless to save space.
 RUN rm -rf /opt/tomcat/webapps/examples 
 RUN rm -rf /opt/tomcat/webapps/docs 
 RUN rm -rf /opt/tomcat/webapps/ROOT
 
+# Copy war from local filesystem
 COPY src/sample.war /opt/tomcat/webapps/ROOT.war
 
-# An entrypoint means arguments to a docker command are taken as args to the entrypoint script!!!  Not a different command and it's args.
+# An entrypoint means arguments to a docker command are taken as args to the entrypoint script!!!
+# Not a different command and it's args.
+# This is may have unexpected behaviors for end users.
 ENTRYPOINT [ "/opt/tomcat/bin/catalina.sh”, “run”]
-
