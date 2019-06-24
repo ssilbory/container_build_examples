@@ -25,7 +25,7 @@ RUN tar xf /tmp/tomcat.tgz -C /opt
 RUN mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat
 
 # No cleanup as this container is discarded
-# Note this stage is overkill as we could do this entire thing in one RUN in the next stage.
+# Note this stage is overkill as we could do this entire thing in one RUN in the next stage.  Also we could just create the directory in our build image.
 # Still there are a lot of reason to do it like this for more complex builds. (addition packages, hiding where we download the tomcat image...)
 
 
