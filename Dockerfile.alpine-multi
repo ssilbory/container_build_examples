@@ -17,8 +17,9 @@ FROM alpine:3.9
 RUN apk add --no-cache openjdk8-jre
 RUN apk upgrade --no-cache
 
-# Copy /opt/tomcat from prior build
+# Copy /opt/tomcat from build stage
 COPY --from=builder /opt/tomcat /opt/tomcat
+# Copy war from local filesystem
 COPY src/sample.war /opt/tomcat/webapps/ROOT.war
 
 CMD /opt/tomcat/bin/catalina.sh run
