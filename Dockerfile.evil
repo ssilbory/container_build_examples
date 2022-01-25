@@ -6,7 +6,6 @@ RUN apt-get -y update
 RUN apt-get -y upgrade 
 RUN apt-get -y install openjdk-8-jdk wget 
 RUN apt-get clean
-# This is pointless as these files are still in prior layers.
 RUN rm -r /var/lib/apt/lists/*
 
 RUN mkdir /usr/local/tomcat
