@@ -1,5 +1,6 @@
-# Ubuntu latest is the current LTS
-FROM ubuntu:latest
+# Ubuntu latest is the current LTS. Let's use the current Focal release.
+FROM ubuntu:focal
+# Set variables to allow quick changes, and visiblity.
 ENV TOMCAT_VERSION 8.0.53
 
 # Install updates, requirements, and clean up
@@ -14,6 +15,9 @@ tar xzvf /tmp/tomcat.tgz -C /opt && \
   rm -rf /opt/tomcat/webapps/docs && \
   rm -rf /opt/tomcat/webapps/ROOT
 
+# Remember we can use COPY to chown and chmod if needed!
 COPY src/sample.war /opt/tomcat/webapps/ROOT.war
 
+# You can also use entry point.  With CMD docker image:tag bash will run bash. With ENTRYPOINT bash will be the arguement.
+# The right option is the one your org has standardized on.
 CMD /opt/tomcat/bin/catalina.sh run
