@@ -1,4 +1,6 @@
+# Note how we are using Ubuntu latest.  This will change unexpectedly when there is a new LTS.
 FROM ubuntu:latest
+# We could make this worse by hard coding the version in the wget command.
 ENV TOMCAT_VERSION 8.0.53
 
 # Install updates, requirements, and clean up in multiple runs
@@ -15,12 +17,15 @@ RUN mkdir /usr/local/tomcat
 RUN wget --quiet --no-cookies https://archive.apache.org/dist/tomcat/tomcat-8/v${TOMCAT_VERSION}/bin/apache-tomcat-${TOMCAT_VERSION}.tar.gz -O /tmp/tomcat.tgz
 RUN tar xzvf /tmp/tomcat.tgz -C /opt
 RUN mv /opt/apache-tomcat-${TOMCAT_VERSION} /opt/tomcat
+# These deletes don't remove the files from prior layers we have two copies of tomcat, and one of the tar file.
+# For even more layers we could chmod or chown the files.
 RUN rm /tmp/tomcat.tgz
 RUN rm -rf /opt/tomcat/webapps/examples
 RUN rm -rf /opt/tomcat/webapps/docs
 RUN rm -rf /opt/tomcat/webapps/ROOT
 
 COPY src/sample.war /opt/tomcat/webapps/ROOT.war
+# For even more layers we could chmod and then chown the war file.  Remember that COPY can do this for you.
 
 # An entrypoint means arguments to a docker command are taken as args to the entrypoint script!!!  Not a different command and it's args.
 ENTRYPOINT [ "/opt/tomcat/bin/catalina.sh”, “run”]
